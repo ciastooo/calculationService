@@ -1,11 +1,8 @@
 ﻿using Api.Services.RabbitMq.Contracts;
 using Calculation.Handlers;
-using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace Api.Services.RabbitMq
@@ -73,14 +70,13 @@ namespace Api.Services.RabbitMq
                 return;
             }
 
-            Console.WriteLine($"Lsitening to {requestQueueName}");
             channel.QueueDeclare(requestQueueName, true, false, false, null);
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += HandleMessage;
             channel.BasicConsume(requestQueueName, true, consumer);
 
-            Console.WriteLine("Listening for messages...");
+            Console.WriteLine($"Listening to {requestQueueName} for messages...");
         }
 
         private void HandleMessage(object sender, BasicDeliverEventArgs e)

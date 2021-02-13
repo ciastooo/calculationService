@@ -61,5 +61,6 @@ namespace Api.Services.RabbitMq.Contracts
     {
         CalculateSum = 0,
         CalculateAverage = 1,
+        Ping = 100,
     }
 }

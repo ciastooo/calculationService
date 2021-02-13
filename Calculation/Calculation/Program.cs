@@ -15,6 +15,7 @@ namespace Calculation
         {
             Console.WriteLine("Starting calculation service...");
 
+            // TODO: Move it into config file 
             var config = new RabbitMqConfig
             {
                 Hostname = "rabbitmq",

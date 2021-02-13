@@ -46,17 +46,6 @@ namespace Api.Controllers
         }
 
         [HttpGet("{name}")]
-        public async Task<IActionResult> QueryData([FromRoute]string name, [FromQuery]long? from = null, [FromQuery] long? to = null)
-        {
-            var data = await repository.Query(name, from, to);
-
-            var sum = data.Any() ? data.Sum(x => x.Value) : 0;
-            var average = data.Any() ? data.Average(x => x.Value) : 0;
-
-            return Ok(new TimeseriesCalculationResultDto { avg = (double)average, sum = (double)sum });
-        }
-
-        [HttpGet("2/{name}")]
         public async Task<IActionResult> QueryDataToCalculationService([FromRoute] string name, [FromQuery] long? from = null, [FromQuery] long? to = null)
         {
             var data = await repository.Query(name, from, to);
