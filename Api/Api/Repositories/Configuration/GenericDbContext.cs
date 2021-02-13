@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Api.Repositories.Configuration
@@ -24,6 +25,11 @@ namespace Api.Repositories.Configuration
         public GenericDbContext(DbContextOptions<GenericDbContext<TEntity>> options) : base(options)
         {
             Database.EnsureCreated();
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
         public TEntity Add(TEntity entity)

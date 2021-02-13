@@ -35,7 +35,7 @@ namespace Api
                 options.UseSqlServer(connectionString);                
             });
 
-            services.AddTransient(typeof(IGenericDbContext<Timeseries>), typeof(GenericDbContext<Timeseries>));
+            services.AddScoped(typeof(IGenericDbContext<Timeseries>), typeof(GenericDbContext<Timeseries>));
             services.AddTransient(typeof(IRepository<Timeseries>), typeof(GenericRepository<Timeseries>));
         }
 
