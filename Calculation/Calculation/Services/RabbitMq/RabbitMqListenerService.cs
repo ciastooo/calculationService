@@ -5,7 +5,6 @@ using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace Api.Services.RabbitMq
@@ -86,14 +85,12 @@ namespace Api.Services.RabbitMq
             var correlationId = e.BasicProperties.CorrelationId;
             try
             {
-                var content = Encoding.UTF8.GetString(e.Body.ToArray());
-                var receivedMessage = JsonConvert.DeserializeObject<MessageContract>(content);
-            
+                var receivedMessage = MessageContract.Deserialize(e.Body.ToArray());
+
                 Console.WriteLine($"Received {receivedMessage?.MessageType} message with CorrelationId {correlationId}");
 
                 var responseValue = CalculateAverage(receivedMessage.Data);
                 var responseMessage = MessageContract.Create(receivedMessage.MessageType, responseValue);
-                Console.WriteLine($"Sending response {responseValue} value with CorrelationId {correlationId}");
 
                 PublishResponse(responseMessage, correlationId, responseQueueName);
             }
@@ -107,15 +104,14 @@ namespace Api.Services.RabbitMq
         {
             try
             {
-                var json = JsonConvert.SerializeObject(responseValue);
-                var body = Encoding.UTF8.GetBytes(json);
+                var body = responseValue.Serialize();
 
                 var responseProps = channel.CreateBasicProperties();
                 responseProps.CorrelationId = correlationId;
 
                 channel.BasicPublish(string.Empty, responseQueueName, responseProps, body);
 
-                Console.WriteLine($"Sent: {responseValue.Data} with CorrelationId {correlationId}");
+                Console.WriteLine($"Sending {responseValue?.MessageType} response with CorrelationId {correlationId}");
             }
             catch (Exception ex)
             {
@@ -127,7 +123,7 @@ namespace Api.Services.RabbitMq
         private static decimal CalculateAverage(object data)
         {
             var list = JsonConvert.DeserializeObject<List<decimal>>(data.ToString());
-            if (list == null || list.Any())
+            if (list == null || !list.Any())
             {
                 return 0;
             }

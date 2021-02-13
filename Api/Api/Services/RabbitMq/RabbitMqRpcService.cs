@@ -1,11 +1,9 @@
 ﻿using Api.Services.RabbitMq.Contracts;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Concurrent;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Api.Services.RabbitMq
@@ -76,8 +74,7 @@ namespace Api.Services.RabbitMq
         {
             try
             {
-                var content = Encoding.UTF8.GetString(e.Body.ToArray());
-                var responseValue = JsonConvert.DeserializeObject<MessageContract>(content);
+                var responseValue = MessageContract.Deserialize(e.Body.ToArray());
                 var correlationId = e.BasicProperties.CorrelationId;
 
                 logger.LogInformation($"Received {responseValue?.MessageType} message with CorrelationId {correlationId}");
@@ -86,7 +83,8 @@ namespace Api.Services.RabbitMq
                 {
                     taskCompletionSource.SetResult(responseValue);
                 }
-            } catch(Exception ex)
+            } 
+            catch(Exception ex)
             {
                 logger.LogError($"Error {ex.Message}");
 
@@ -99,8 +97,7 @@ namespace Api.Services.RabbitMq
             props.CorrelationId = correlationId.ToString();
             props.ReplyTo = responseQueueName;
 
-            var json = JsonConvert.SerializeObject(message);
-            var body = Encoding.UTF8.GetBytes(json);
+            var body = message.Serialize();
 
             logger.LogInformation($"Sending {message?.MessageType} message with CorrelationId {correlationId}");
             channel.BasicPublish(string.Empty, requestQueueName, props, body);
