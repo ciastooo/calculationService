@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Calculation
 {
@@ -7,6 +8,8 @@ namespace Calculation
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            Thread.Sleep(10000);
+            Console.WriteLine("Quitting");
         }
     }
 }

@@ -8,6 +8,12 @@ services:
       - "5001:5001"
     depends_on:
       - db
+      - rabitmq
+  calculation:
+    container_name: calculation
+    build: ./calculation
+    depends_on:
+      - api
   db:
     container_name: database
     image: mcr.microsoft.com/mssql/server

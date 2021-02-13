@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculation", "Calculation\Calculation.csproj", "{2B0A5256-D8BA-48F4-BDA0-A9920A76B422}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculation.Test", "Calculation.Test\Calculation.Test.csproj", "{31768F36-EB55-4180-B012-03F421BF6A19}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculation.Tests", "Calculation.Tests\Calculation.Tests.csproj", "{266F42E9-0C2D-4399-BE4C-5876DE638BCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,5 +44,17 @@ Global
 		{31768F36-EB55-4180-B012-03F421BF6A19}.Release|x64.Build.0 = Release|Any CPU
 		{31768F36-EB55-4180-B012-03F421BF6A19}.Release|x86.ActiveCfg = Release|Any CPU
 		{31768F36-EB55-4180-B012-03F421BF6A19}.Release|x86.Build.0 = Release|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Debug|x64.Build.0 = Debug|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Debug|x86.Build.0 = Debug|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Release|x64.ActiveCfg = Release|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Release|x64.Build.0 = Release|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Release|x86.ActiveCfg = Release|Any CPU
+		{266F42E9-0C2D-4399-BE4C-5876DE638BCE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
