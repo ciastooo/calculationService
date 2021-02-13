@@ -1,6 +1,7 @@
 ﻿using Api.Repositories.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -10,10 +11,11 @@ namespace Api.Repositories.Configuration
     public interface IGenericDbContext<TEntity> where TEntity : IEntity, new() {
 
         TEntity Add(TEntity entity);
+        void AddRange(List<TEntity> entities);
         TEntity Update(TEntity entity);
         void Delete(TEntity entity);
         TEntity ReadById(Guid id);
-        IQueryable<TEntity> ReadAll();
+        IQueryable<TEntity> GetQueryable();
         Task SaveChangesAsync();
     }
 
@@ -39,6 +41,11 @@ namespace Api.Repositories.Configuration
             return entity;
         }
 
+        public void AddRange(List<TEntity> entities)
+        {
+            Entities.AddRange(entities);
+        }
+
         public TEntity Update(TEntity entity)
         {
             return entity;
@@ -54,7 +61,7 @@ namespace Api.Repositories.Configuration
             return Entities.Where(e => e.Id == id).FirstOrDefault();
         }
 
-        public IQueryable<TEntity> ReadAll()
+        public IQueryable<TEntity> GetQueryable()
         {
             return Entities;
         }

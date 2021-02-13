@@ -10,6 +10,7 @@ namespace Api.Repositories
     public interface IRepository<TEntity> where TEntity : class, IEntity, new()
     {
         Task<TEntity> Add(TEntity entity);
+        Task AddRange(List<TEntity> entity);
         Task<TEntity> Update(TEntity entity);
         Task Delete(Guid entityId);
         Task<List<TEntity>> ReadAll();
@@ -18,7 +19,7 @@ namespace Api.Repositories
     public class GenericRepository<TEntity> : IRepository<TEntity>
         where TEntity : class, IEntity, new()
     {
-        private readonly IGenericDbContext<TEntity> dbContext;
+        protected readonly IGenericDbContext<TEntity> dbContext;
 
         public GenericRepository(IGenericDbContext<TEntity> dbContext)
         {
@@ -40,6 +41,19 @@ namespace Api.Repositories
             }
         }
 
+        public async Task AddRange(List<TEntity> entities)
+        {
+            try
+            {
+                dbContext.AddRange(entities);
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Couldn't add entities: {ex.Message}");
+            }
+        }
+
         public async Task Delete(Guid entityId)
         {
             try
@@ -58,7 +72,7 @@ namespace Api.Repositories
         {
             try
             {
-                 var entities = await dbContext.ReadAll().ToListAsync();
+                 var entities = await dbContext.GetQueryable().ToListAsync();
                 return entities;
             }
             catch (Exception ex)

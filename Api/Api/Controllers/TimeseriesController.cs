@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Api.Controllers.Dtos;
 using Api.Repositories;
 using Api.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,26 +15,39 @@ namespace Api.Controllers
     public class TimeseriesController : ControllerBase
     {
         private readonly ILogger<TimeseriesController> logger;
-        protected readonly IRepository<Timeseries> repository;
+        protected readonly ITimeseriesRepository repository;
 
-        public TimeseriesController(ILogger<TimeseriesController> logger, IRepository<Timeseries> repository)
+        public TimeseriesController(ILogger<TimeseriesController> logger, ITimeseriesRepository repository)
         {
             this.logger = logger;
             this.repository = repository;
         }
 
-        [HttpGet("test")]
-        public async Task<IEnumerable<Timeseries>> Get()
+        [HttpPost]
+        public async Task<IActionResult> AddData([FromBody]List<TimeseriesDto> data)
         {
-            var a = await repository.ReadAll();
-            await repository.Add(new Timeseries
+            var entitiesToAdd = data.Select(x => new Timeseries
             {
                 Id = Guid.NewGuid(),
-                Name = "test",
-                Timestamp = DateTime.Now,
-                Value = 42
-            });
-            return a;
+                Name = x.Name,
+                Timestamp = x.T,
+                Value = x.V,
+            }).ToList();
+
+            await repository.AddRange(entitiesToAdd);
+
+            return Accepted();
+        }
+
+        [HttpGet("{name}")]
+        public async Task<IActionResult> QueryData([FromRoute]string name, [FromQuery]DateTime? from, [FromQuery] DateTime? to)
+        {
+            var data = await repository.Query(name, from, to);
+
+            var sum = data.Sum(x => x.Value);
+            var average = data.Average(x => x.Value);
+
+            return Ok(new TimeseriesCalculationResultDto { avg = average, sum = sum });
         }
     }
 }

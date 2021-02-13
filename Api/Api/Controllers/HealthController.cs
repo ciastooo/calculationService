@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("health")]
     public class HealthController : ControllerBase
     {
         private readonly ILogger<HealthController> logger;
@@ -15,7 +15,7 @@ namespace Api.Controllers
         }
 
 
-        [HttpGet("health")]
+        [HttpGet]
         public IActionResult Get()
         {
             return Ok();

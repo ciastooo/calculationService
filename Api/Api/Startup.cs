@@ -36,7 +36,7 @@ namespace Api
             });
 
             services.AddScoped(typeof(IGenericDbContext<Timeseries>), typeof(GenericDbContext<Timeseries>));
-            services.AddTransient(typeof(IRepository<Timeseries>), typeof(GenericRepository<Timeseries>));
+            services.AddTransient(typeof(ITimeseriesRepository), typeof(TimeseriesRepository));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
