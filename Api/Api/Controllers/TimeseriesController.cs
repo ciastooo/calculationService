@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Api.Controllers.Dtos;
 using Api.Repositories;
 using Api.Repositories.Models;
+using Api.Services.RabbitMq;
+using Api.Services.RabbitMq.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,11 +19,13 @@ namespace Api.Controllers
     {
         private readonly ILogger<TimeseriesController> logger;
         protected readonly ITimeseriesRepository repository;
+        protected readonly IRabbitMqRpcService rabbitMqRpcService;
 
-        public TimeseriesController(ILogger<TimeseriesController> logger, ITimeseriesRepository repository)
+        public TimeseriesController(ILogger<TimeseriesController> logger, ITimeseriesRepository repository, IRabbitMqRpcService rabbitMqRpcService)
         {
             this.logger = logger;
             this.repository = repository;
+            this.rabbitMqRpcService = rabbitMqRpcService;
         }
 
         [HttpPost]
@@ -50,6 +54,19 @@ namespace Api.Controllers
             var average = data.Any() ? data.Average(x => x.Value) : 0;
 
             return Ok(new TimeseriesCalculationResultDto { avg = average, sum = sum });
+        }
+
+        [HttpGet("2/{name}")]
+        public async Task<IActionResult> QueryDataToCalculationService([FromRoute] string name, [FromQuery] long? from = null, [FromQuery] long? to = null)
+        {
+            var data = await repository.Query(name, from, to);
+
+            var sum = rabbitMqRpcService.Send<decimal>(MessageType.CalculateSum, data.Select(x => x.Value).ToList());
+            var average = rabbitMqRpcService.Send<decimal>(MessageType.CalculateAverage, data.Select(x => x.Value).ToList());
+
+            await Task.WhenAll(new[] { sum, average });
+
+            return Ok(new TimeseriesCalculationResultDto { avg = average.Result, sum = sum.Result });
         }
     }
 }

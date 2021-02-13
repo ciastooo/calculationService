@@ -1,13 +1,16 @@
 using Api.Repositories;
 using Api.Repositories.Configuration;
 using Api.Repositories.Models;
+using Api.Services.RabbitMq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using System;
 
 namespace Api
 {
@@ -23,7 +26,7 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddOptions();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -37,6 +40,12 @@ namespace Api
 
             services.AddScoped(typeof(IGenericDbContext<Timeseries>), typeof(GenericDbContext<Timeseries>));
             services.AddTransient(typeof(ITimeseriesRepository), typeof(TimeseriesRepository));
+
+            var serviceClientSettingsConfig = Configuration.GetSection("RabbitMqConfig");
+            services.Configure<RabbitMqConfig>(serviceClientSettingsConfig);
+
+            services.AddSingleton<IRabbitMqConfig, RabbitMqConfig>();
+            services.AddSingleton<IRabbitMqRpcService, RabbitMqRpcService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

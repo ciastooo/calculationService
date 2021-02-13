@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Api.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
@@ -8,6 +9,7 @@ namespace Api.Controllers
     public class HealthController : ControllerBase
     {
         private readonly ILogger<HealthController> logger;
+
 
         public HealthController(ILogger<HealthController> logger)
         {
