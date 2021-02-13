@@ -1,12 +1,12 @@
 version: "3.9"
 services:
-  api:
-    container_name: api
+  Api:
+    container_name: Api
     build: 
-      context: ./api
+      context: ./Api
       target: tests
   calculation:
-    container_name: calculation
+    container_name: Calculation
     build: 
-      context: ./calculation
+      context: ./Calculation
       target: tests
