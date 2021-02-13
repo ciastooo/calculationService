@@ -1,5 +1,7 @@
+using Api.Repositories.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +26,11 @@ namespace Api
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
+            });
+            services.AddDbContext<TimeseriesContext>(options =>
+            {
+                var connectionString = Configuration.GetValue<string>("ConnectionString");
+                options.UseSqlServer(connectionString);                
             });
         }
 
