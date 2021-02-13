@@ -12,12 +12,12 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class TimeseriesController : ControllerBase
     {
-        private readonly ILogger<TimeseriesController> _logger;
+        private readonly ILogger<TimeseriesController> logger;
         protected readonly IRepository<Timeseries> repository;
 
         public TimeseriesController(ILogger<TimeseriesController> logger, IRepository<Timeseries> repository)
         {
-            _logger = logger;
+            this.logger = logger;
             this.repository = repository;
         }
 
