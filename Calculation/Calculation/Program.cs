@@ -1,6 +1,8 @@
 ﻿using Api.Services.RabbitMq;
 using Calculation.Handlers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Calculation
@@ -29,9 +31,28 @@ namespace Calculation
         }
 
         private static IRabbitMqListenerService InitializeListenerService(IRabbitMqConfig config, int retries)
+        {            
+            return new RabbitMqListenerService(config, retries, CreateMessageCoordinator());
+        }
+
+        private static IMessageCoordinator CreateMessageCoordinator()
         {
-            var messageCoordinator = new MessageCoordinator();
-            return new RabbitMqListenerService(config, retries, messageCoordinator);
+            var handlerInterface = typeof(IMessageHandler);
+            var handlerTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => !p.IsInterface)
+                .Where(p => handlerInterface.IsAssignableFrom(p))
+                .ToList();
+
+            var handlers = new List<IMessageHandler>();
+
+            foreach (var handlerType in handlerTypes)
+            {
+                var handler = Activator.CreateInstance(handlerType);
+                handlers.Add((IMessageHandler)handler);
+            }
+
+            return new MessageCoordinator(handlers);
         }
     }
 }

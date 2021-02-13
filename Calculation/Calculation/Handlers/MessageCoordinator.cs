@@ -14,23 +14,27 @@ namespace Calculation.Handlers
     {
         private readonly List<IMessageHandler> handlers;
 
-        public MessageCoordinator()
+        public MessageCoordinator(List<IMessageHandler> handlers)
         {
-            handlers = new List<IMessageHandler>();
-            handlers.Add(new CalculateAverageHandler());
-            handlers.Add(new CalculateSumHandler());
+            this.handlers = handlers;
         }
 
         public object HandleMessage(IMessageContract message)
         {
-            var handler = handlers.Single(m => m.CanHandle(message.MessageType));
+            var handler = handlers.FirstOrDefault(m => m.CanHandle(message.MessageType));
 
             if(handler == null)
             {
                 Console.WriteLine($"No handler found for {message.MessageType} messageType");
+                return null;
             }
 
             return handler.Handle(message.Data);
+        }
+
+        public List<IMessageHandler> GetHandlers()
+        {
+            return handlers;
         }
     }
 }

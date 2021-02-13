@@ -1,5 +1,6 @@
 ﻿using Api.Services.RabbitMq.Contracts;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
