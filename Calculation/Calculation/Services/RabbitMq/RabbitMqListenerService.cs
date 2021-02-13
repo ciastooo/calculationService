@@ -1,4 +1,5 @@
 ﻿using Api.Services.RabbitMq.Contracts;
+using Calculation.Handlers;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -17,6 +18,7 @@ namespace Api.Services.RabbitMq
     public class RabbitMqListenerService : IRabbitMqListenerService, IDisposable
     {
         private readonly IRabbitMqConfig config;
+        private readonly IMessageCoordinator messageCoordinator;
 
         private IConnection connection { get; set; }
         private IModel channel { get; set; }
@@ -24,9 +26,10 @@ namespace Api.Services.RabbitMq
         private string requestQueueName => $"{config.QueueName}_Request";
         private string responseQueueName => $"{config.QueueName}_Response";
 
-        public RabbitMqListenerService(IRabbitMqConfig config, int retryCount)
+        public RabbitMqListenerService(IRabbitMqConfig config, int retryCount, IMessageCoordinator messageCoordinator)
         {
             this.config = config;
+            this.messageCoordinator = messageCoordinator;
 
             ConnectAndListen(retryCount);
         }
@@ -89,7 +92,7 @@ namespace Api.Services.RabbitMq
 
                 Console.WriteLine($"Received {receivedMessage?.MessageType} message with CorrelationId {correlationId}");
 
-                var responseValue = CalculateAverage(receivedMessage.Data);
+                var responseValue = messageCoordinator.HandleMessage(receivedMessage);
                 var responseMessage = MessageContract.Create(receivedMessage.MessageType, responseValue);
 
                 PublishResponse(responseMessage, correlationId, responseQueueName);
@@ -118,17 +121,6 @@ namespace Api.Services.RabbitMq
                 Console.WriteLine($"Error occurred during sending message with a {correlationId} correlationId - {ex.Message}");
 
             }
-        }
-
-        private static decimal CalculateAverage(object data)
-        {
-            var list = JsonConvert.DeserializeObject<List<decimal>>(data.ToString());
-            if (list == null || !list.Any())
-            {
-                return 0;
-            }
-
-            return list.Average();
         }
 
         public void Dispose()

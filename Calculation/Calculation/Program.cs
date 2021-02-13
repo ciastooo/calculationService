@@ -1,4 +1,5 @@
 ﻿using Api.Services.RabbitMq;
+using Calculation.Handlers;
 using System;
 using System.Threading;
 
@@ -29,7 +30,8 @@ namespace Calculation
 
         private static IRabbitMqListenerService InitializeListenerService(IRabbitMqConfig config, int retries)
         {
-            return new RabbitMqListenerService(config, retries);
+            var messageCoordinator = new MessageCoordinator();
+            return new RabbitMqListenerService(config, retries, messageCoordinator);
         }
     }
 }
