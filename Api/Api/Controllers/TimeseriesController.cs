@@ -53,7 +53,7 @@ namespace Api.Controllers
             var sum = data.Any() ? data.Sum(x => x.Value) : 0;
             var average = data.Any() ? data.Average(x => x.Value) : 0;
 
-            return Ok(new TimeseriesCalculationResultDto { avg = average, sum = sum });
+            return Ok(new TimeseriesCalculationResultDto { avg = (double)average, sum = (double)sum });
         }
 
         [HttpGet("2/{name}")]
@@ -61,8 +61,8 @@ namespace Api.Controllers
         {
             var data = await repository.Query(name, from, to);
 
-            var sum = rabbitMqRpcService.Send<decimal>(MessageType.CalculateSum, data.Select(x => x.Value).ToList());
-            var average = rabbitMqRpcService.Send<decimal>(MessageType.CalculateAverage, data.Select(x => x.Value).ToList());
+            var sum = rabbitMqRpcService.Send<double>(MessageType.CalculateSum, data.Select(x => x.Value).ToList());
+            var average = rabbitMqRpcService.Send<double>(MessageType.CalculateAverage, data.Select(x => x.Value).ToList());
 
             await Task.WhenAll(new[] { sum, average });
 

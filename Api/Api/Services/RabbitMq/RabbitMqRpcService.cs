@@ -49,7 +49,7 @@ namespace Api.Services.RabbitMq
 
             Publish(message, correlationId);
 
-            return taskCompletionSource.Task.ContinueWith(t => (TResponse)t.Result);
+            return taskCompletionSource.Task.ContinueWith(t => (TResponse)t.Result.Data);
         }
 
         private void ConnectAndListen()
@@ -74,15 +74,22 @@ namespace Api.Services.RabbitMq
 
         private void HandleResponse(object sender, BasicDeliverEventArgs e)
         {
-            var content = Encoding.UTF8.GetString(e.Body.ToArray());
-            var responseValue = JsonConvert.DeserializeObject<IMessageContract>(content);
-            var correlationId = e.BasicProperties.CorrelationId;
-
-            logger.LogInformation($"Received {responseValue?.MessageType} message with CorrelationId {correlationId}");
-
-            if (pendingMessages.TryRemove(Guid.Parse(correlationId), out var taskCompletionSource))
+            try
             {
-                taskCompletionSource.SetResult(responseValue);
+                var content = Encoding.UTF8.GetString(e.Body.ToArray());
+                var responseValue = JsonConvert.DeserializeObject<MessageContract>(content);
+                var correlationId = e.BasicProperties.CorrelationId;
+
+                logger.LogInformation($"Received {responseValue?.MessageType} message with CorrelationId {correlationId}");
+
+                if (pendingMessages.TryRemove(Guid.Parse(correlationId), out var taskCompletionSource))
+                {
+                    taskCompletionSource.SetResult(responseValue);
+                }
+            } catch(Exception ex)
+            {
+                logger.LogError($"Error {ex.Message}");
+
             }
         }
 

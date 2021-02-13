@@ -14,7 +14,7 @@ namespace Api.Controllers.Dtos
 
     public class TimeseriesCalculationResultDto
     {       
-        public decimal avg { get; set; }
-        public decimal sum { get; set; }
+        public double avg { get; set; }
+        public double sum { get; set; }
     }
 }
