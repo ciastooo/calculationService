@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  Api:
+  api:
     container_name: Api
     build: ./Api
     ports:
@@ -9,7 +9,7 @@ services:
     depends_on:
       - db
       - rabbitmq
-  Calculation:
+  calculation:
     container_name: Calculation
     build: ./Calculation
     ports:
