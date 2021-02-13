@@ -6,6 +6,9 @@ RUN dotnet restore
 COPY . .
 RUN dotnet build
 
+FROM build AS tests
+CMD ["dotnet", "test"]
+
 FROM build AS publish
 RUN dotnet publish -c Release -o Release
 
