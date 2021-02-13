@@ -11,7 +11,7 @@ namespace Api.Repositories.Configuration
     public interface IGenericDbContext<TEntity> where TEntity : IEntity, new() {
 
         TEntity Add(TEntity entity);
-        void AddRange(List<TEntity> entities);
+        List<TEntity> AddRange(List<TEntity> entities);
         TEntity Update(TEntity entity);
         void Delete(TEntity entity);
         TEntity ReadById(Guid id);
@@ -41,9 +41,11 @@ namespace Api.Repositories.Configuration
             return entity;
         }
 
-        public void AddRange(List<TEntity> entities)
+        public List<TEntity> AddRange(List<TEntity> entities)
         {
             Entities.AddRange(entities);
+
+            return entities;
         }
 
         public TEntity Update(TEntity entity)

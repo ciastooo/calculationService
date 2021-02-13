@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Api.Controllers.Dtos;
 using Api.Repositories;
 using Api.Repositories.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -24,28 +25,29 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> AddData([FromBody]List<TimeseriesDto> data)
         {
             var entitiesToAdd = data.Select(x => new Timeseries
             {
                 Id = Guid.NewGuid(),
                 Name = x.Name,
-                Timestamp = x.T,
+                Timestamp = DateTimeOffset.FromUnixTimeSeconds(x.T).DateTime,
                 Value = x.V,
             }).ToList();
 
             await repository.AddRange(entitiesToAdd);
 
-            return Accepted();
+            return CreatedAtAction(nameof(AddData), new { ids = entitiesToAdd.Select(x => x.Id).ToList() });
         }
 
         [HttpGet("{name}")]
-        public async Task<IActionResult> QueryData([FromRoute]string name, [FromQuery]DateTime? from, [FromQuery] DateTime? to)
+        public async Task<IActionResult> QueryData([FromRoute]string name, [FromQuery]long? from = null, [FromQuery] long? to = null)
         {
             var data = await repository.Query(name, from, to);
 
-            var sum = data.Sum(x => x.Value);
-            var average = data.Average(x => x.Value);
+            var sum = data.Any() ? data.Sum(x => x.Value) : 0;
+            var average = data.Any() ? data.Average(x => x.Value) : 0;
 
             return Ok(new TimeseriesCalculationResultDto { avg = average, sum = sum });
         }

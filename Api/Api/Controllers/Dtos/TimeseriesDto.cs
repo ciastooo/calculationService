@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Api.Controllers.Dtos
 {
@@ -8,7 +7,7 @@ namespace Api.Controllers.Dtos
         [Required]
         public string Name { get; set; }
         [Required]
-        public DateTime T { get; set; }
+        public long T { get; set; }
         [Required]
         public decimal V{ get; set; }
     }

@@ -10,7 +10,7 @@ namespace Api.Repositories
 {
     public interface ITimeseriesRepository : IRepository<Timeseries>
     {
-        Task<List<Timeseries>> Query(string name, DateTime? from, DateTime? to);
+        Task<List<Timeseries>> Query(string name, long? from, long? to);
     }
 
     public class TimeseriesRepository : GenericRepository<Timeseries>, ITimeseriesRepository
@@ -20,7 +20,7 @@ namespace Api.Repositories
 
         }
 
-        public async Task<List<Timeseries>> Query(string name, DateTime? from, DateTime? to)
+        public async Task<List<Timeseries>> Query(string name, long? from, long? to)
         {
             try
             {
@@ -28,12 +28,14 @@ namespace Api.Repositories
 
                 if (from.HasValue)
                 {
-                    query = query.Where(x => x.Timestamp >= from.Value);
+                    var fromDate = DateTimeOffset.FromUnixTimeSeconds(from.Value).DateTime;
+                    query = query.Where(x => x.Timestamp >= fromDate);
                 }
 
                 if (to.HasValue)
                 {
-                    query = query.Where(x => x.Timestamp <= to.Value);
+                    var toDate = DateTimeOffset.FromUnixTimeSeconds(to.Value).DateTime;
+                    query = query.Where(x => x.Timestamp <= toDate);
                 }
 
                 return await query.ToListAsync();

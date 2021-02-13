@@ -10,7 +10,7 @@ namespace Api.Repositories
     public interface IRepository<TEntity> where TEntity : class, IEntity, new()
     {
         Task<TEntity> Add(TEntity entity);
-        Task AddRange(List<TEntity> entity);
+        Task<List<TEntity>> AddRange(List<TEntity> entity);
         Task<TEntity> Update(TEntity entity);
         Task Delete(Guid entityId);
         Task<List<TEntity>> ReadAll();
@@ -41,12 +41,13 @@ namespace Api.Repositories
             }
         }
 
-        public async Task AddRange(List<TEntity> entities)
+        public async Task<List<TEntity>> AddRange(List<TEntity> entities)
         {
             try
             {
                 dbContext.AddRange(entities);
                 await dbContext.SaveChangesAsync();
+                return entities;
             }
             catch (Exception ex)
             {
