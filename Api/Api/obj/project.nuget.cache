@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "tDaFvapQEphK/0QppFiBVY/5TDu1zVrYxG0WOryB/YPQPe0TwmS9r8Tr9RHJldzra+UdnyBTj6287/432QEwtg==",
+  "success": true,
+  "projectFilePath": "C:\\repos\\CalculationService\\calculationService\\Api\\Api\\Api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\piwo\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\piwo\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\piwo\\.nuget\\packages\\swashbuckle.aspnetcore\\5.6.3\\swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "C:\\Users\\piwo\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\5.6.3\\swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "C:\\Users\\piwo\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\5.6.3\\swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "C:\\Users\\piwo\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\5.6.3\\swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}
