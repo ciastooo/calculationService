@@ -1,13 +1,13 @@
 version: "3.9"
 services:
-  api:
-    container_name: api
-    build: ./api
-    ports:
-      - "5000:5000"
-      - "5001:5001"
-    depends_on:
-      - db
+  # api:
+  #   container_name: api
+  #   build: ./api
+  #   ports:
+  #     - "5000:5000"
+  #     - "5001:5001"
+  #   depends_on:
+  #     - db
   db:
     container_name: database
     image: mcr.microsoft.com/mssql/server

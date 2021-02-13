@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Api.Repositories.Configuration;
+using Api.Repositories;
 using Api.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,26 +13,25 @@ namespace Api.Controllers
     public class TimeseriesController : ControllerBase
     {
         private readonly ILogger<TimeseriesController> _logger;
-        protected readonly TimeseriesContext dbContext;
+        protected readonly IRepository<Timeseries> repository;
 
-        public TimeseriesController(ILogger<TimeseriesController> logger, TimeseriesContext dbContext)
+        public TimeseriesController(ILogger<TimeseriesController> logger, IRepository<Timeseries> repository)
         {
             _logger = logger;
-            this.dbContext = dbContext;
+            this.repository = repository;
         }
 
         [HttpGet("test")]
         public async Task<IEnumerable<Timeseries>> Get()
         {
-            var a = dbContext.Timeseries.ToList();
-            dbContext.Timeseries.Add(new Timeseries
+            var a = await repository.ReadAll();
+            await repository.Add(new Timeseries
             {
                 Id = Guid.NewGuid(),
                 Name = "test",
                 Timestamp = DateTime.Now,
                 Value = 42
             });
-            await dbContext.SaveChangesAsync();
             return a;
         }
     }

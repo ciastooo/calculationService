@@ -1,4 +1,6 @@
+using Api.Repositories;
 using Api.Repositories.Configuration;
+using Api.Repositories.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -27,11 +29,14 @@ namespace Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
             });
-            services.AddDbContext<TimeseriesContext>(options =>
+            services.AddDbContext<GenericDbContext<Timeseries>>(options =>
             {
                 var connectionString = Configuration.GetValue<string>("ConnectionString");
                 options.UseSqlServer(connectionString);                
             });
+
+            services.AddTransient(typeof(IGenericDbContext<Timeseries>), typeof(GenericDbContext<Timeseries>));
+            services.AddTransient(typeof(IRepository<Timeseries>), typeof(GenericRepository<Timeseries>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
