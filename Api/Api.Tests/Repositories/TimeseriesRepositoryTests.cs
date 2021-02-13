@@ -83,7 +83,7 @@ namespace Api.Tests.Repositories
             };
         }
 
-        private Timeseries CreateTimeseries(string name, DateTime timestamp, decimal value)
+        private Timeseries CreateTimeseries(string name, DateTime timestamp, double value)
         {
             return new Timeseries
             {

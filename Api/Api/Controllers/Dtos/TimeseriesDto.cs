@@ -9,7 +9,7 @@ namespace Api.Controllers.Dtos
         [Required]
         public long T { get; set; }
         [Required]
-        public decimal V{ get; set; }
+        public double V{ get; set; }
     }
 
     public class TimeseriesCalculationResultDto
